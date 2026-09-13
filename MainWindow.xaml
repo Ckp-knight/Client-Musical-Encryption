@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Musical_Encryption_Project"
         mc:Ignorable="d"
         Title="Musical Encryption"
-        Height="500" Width="820"
+        Height="660" Width="820"
         FontFamily="Segoe UI">
 
     <Window.Resources>
@@ -17,6 +17,8 @@
         <SolidColorBrush x:Key="TextColor" Color="Black" />
         <SolidColorBrush x:Key="FieldBorder" Color="#9E9E9E" />
         <SolidColorBrush x:Key="AccentGreen" Color="#2E7D32" />
+        <SolidColorBrush x:Key="PlaceholderColor" Color="#8A8A8A" />
+        <SolidColorBrush x:Key="RuleRed" Color="#C62828" />
 
         <!-- Base field label -->
         <Style x:Key="FieldLabel" TargetType="TextBlock">
@@ -28,7 +30,7 @@
         <!-- Styled text box -->
         <Style x:Key="FieldTextBox" TargetType="TextBox">
             <Setter Property="Height" Value="36" />
-            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="Padding" Value="6,0" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Foreground" Value="{StaticResource TextColor}" />
             <Setter Property="Background" Value="{StaticResource FieldBackground}" />
@@ -42,9 +44,23 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="6">
-                            <ScrollViewer x:Name="PART_ContentHost"
-                                          Margin="{TemplateBinding Padding}"
-                                          VerticalAlignment="Center" />
+                            <Grid>
+                                <!-- Placeholder: set via the TextBox's Tag property. Shares the exact
+                                     same Margin as PART_ContentHost below, so it lines up with the
+                                     caret pixel-for-pixel instead of relying on a separately-guessed offset. -->
+                                <TextBlock x:Name="placeholder"
+                                           Text="{TemplateBinding Tag}"
+                                           Foreground="{StaticResource PlaceholderColor}"
+                                           FontSize="{TemplateBinding FontSize}"
+                                           Margin="{TemplateBinding Padding}"
+                                           VerticalAlignment="Center"
+                                           IsHitTestVisible="False"
+                                           Focusable="False"
+                                           Visibility="Collapsed" />
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                              Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="Center" />
+                            </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -52,6 +68,9 @@
                             </Trigger>
                             <Trigger Property="IsFocused" Value="True">
                                 <Setter Property="BorderBrush" Value="{StaticResource AccentGreen}" />
+                            </Trigger>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="placeholder" Property="Visibility" Value="Visible" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -116,6 +135,9 @@
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="bd" Property="Background" Value="#1B5E20" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="bd" Property="Background" Value="#9E9E9E" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -201,6 +223,110 @@
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
                                 <Setter TargetName="bd" Property="Background" Value="#C8C8C8" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Logo button, top-left. Click fills admin test credentials on the login screen. -->
+        <Style x:Key="LogoButtonStyle" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent">
+                            <Image x:Name="img"
+                                   Source="musical encryption logo.png"
+                                   Stretch="Uniform"
+                                   RenderTransformOrigin="0.5,0.5">
+                                <Image.RenderTransform>
+                                    <ScaleTransform x:Name="imgScale" ScaleX="1" ScaleY="1" />
+                                </Image.RenderTransform>
+                            </Image>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="imgScale" Storyboard.TargetProperty="ScaleX" To="1.12" Duration="0:0:0.15" />
+                                            <DoubleAnimation Storyboard.TargetName="imgScale" Storyboard.TargetProperty="ScaleY" To="1.12" Duration="0:0:0.15" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="imgScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.15" />
+                                            <DoubleAnimation Storyboard.TargetName="imgScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.15" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="imgScale" Storyboard.TargetProperty="ScaleX" To="0.92" Duration="0:0:0.08" />
+                                            <DoubleAnimation Storyboard.TargetName="imgScale" Storyboard.TargetProperty="ScaleY" To="0.92" Duration="0:0:0.08" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="imgScale" Storyboard.TargetProperty="ScaleX" To="1.12" Duration="0:0:0.08" />
+                                            <DoubleAnimation Storyboard.TargetName="imgScale" Storyboard.TargetProperty="ScaleY" To="1.12" Duration="0:0:0.08" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Eye button that shows/hides a password field. Unchecked = hidden, Checked = revealed. -->
+        <Style x:Key="EyeToggleButton" TargetType="ToggleButton">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource PlaceholderColor}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="Transparent">
+                            <Grid>
+                                <TextBlock x:Name="eyeShow"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           Text="&#xE7B3;"
+                                           FontSize="16"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                                <TextBlock x:Name="eyeHide"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           Text="&#xED1A;"
+                                           FontSize="16"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Visibility="Collapsed" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="eyeShow" Property="Visibility" Value="Collapsed" />
+                                <Setter TargetName="eyeHide" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="eyeShow" Property="Foreground" Value="#616161" />
+                                <Setter TargetName="eyeHide" Property="Foreground" Value="#616161" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -294,6 +420,16 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="ExitButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Content" Value="Exit" />
+            <Setter Property="Width" Value="110" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Content" Value="צא" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="NavToCreateUserStyle" TargetType="RadioButton" BasedOn="{StaticResource TextRadioButton}">
             <Setter Property="Content" Value="Create account" />
             <Setter Property="Margin" Value="0,12,0,0" />
@@ -314,11 +450,96 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Screen shown only while NavToCreateUser is unchecked (login screen) -->
+        <!-- ===== Create-account rule texts (bilingual). Colour is set from code-behind. ===== -->
+
+        <Style x:Key="RuleLenTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Text" Value="3&#x2013;20 characters" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Text" Value="&#x200F;3&#x2013;20 &#x05EA;&#x05D5;&#x05D5;&#x05D9;&#x05DD;" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RuleCharsTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Text" Value="English letters and digits only" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Text" Value="&#x200F;&#x05D0;&#x05D5;&#x05EA;&#x05D9;&#x05D5;&#x05EA; &#x05D5;&#x05E1;&#x05E4;&#x05E8;&#x05D5;&#x05EA; &#x05D1;&#x05D0;&#x05E0;&#x05D2;&#x05DC;&#x05D9;&#x05EA; &#x05D1;&#x05DC;&#x05D1;&#x05D3;" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RuleStartTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Text" Value="Starts with a letter" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Text" Value="&#x200F;&#x05DE;&#x05EA;&#x05D7;&#x05D9;&#x05DC; &#x05D1;&#x05D0;&#x05D5;&#x05EA;" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RulePwLenTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Text" Value="At least 8 characters" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Text" Value="&#x200F;&#x05DC;&#x05E4;&#x05D7;&#x05D5;&#x05EA; 8 &#x05EA;&#x05D5;&#x05D5;&#x05D9;&#x05DD;" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RulePwUpperTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Text" Value="Contains an uppercase letter" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Text" Value="&#x200F;&#x05DE;&#x05DB;&#x05D9;&#x05DC;&#x05D4; &#x05D0;&#x05D5;&#x05EA; &#x05D2;&#x05D3;&#x05D5;&#x05DC;&#x05D4;" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RulePwLowerTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Text" Value="Contains a lowercase letter" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Text" Value="&#x200F;&#x05DE;&#x05DB;&#x05D9;&#x05DC;&#x05D4; &#x05D0;&#x05D5;&#x05EA; &#x05E7;&#x05D8;&#x05E0;&#x05D4;" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RulePwDigitTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Text" Value="Contains a digit" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Text" Value="&#x200F;&#x05DE;&#x05DB;&#x05D9;&#x05DC;&#x05D4; &#x05E1;&#x05E4;&#x05E8;&#x05D4;" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RuleMatchTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Text" Value="Passwords match" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Text" Value="&#x200F;&#x05D4;&#x05E1;&#x05D9;&#x05E1;&#x05DE;&#x05D0;&#x05D5;&#x05EA; &#x05EA;&#x05D5;&#x05D0;&#x05DE;&#x05D5;&#x05EA;" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Screen shown only while NavToCreateUser and NavToApp are both unchecked (login screen) -->
         <Style x:Key="LoginScreenVisibility" TargetType="StackPanel">
             <Setter Property="Visibility" Value="Visible" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=NavToCreateUser}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=NavToApp}" Value="True">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
             </Style.Triggers>
@@ -334,20 +555,30 @@
             </Style.Triggers>
         </Style>
 
+        <!-- Screen shown only while NavToApp is checked (signed in — the app itself) -->
+        <Style x:Key="AppScreenVisibility" TargetType="Grid">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=NavToApp}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
 
     <!-- Background: translucent gray (the rest of the app will show through later, like the Minecraft GUI dim) -->
     <Grid Background="#B3808080">
 
-        <!-- Logo, top-left -->
-        <Image x:Name="LogoImage"
-               Source="musical encryption logo.png"
-               Width="80"
-               Height="80"
-               Margin="20"
-               HorizontalAlignment="Left"
-               VerticalAlignment="Top"
-               Stretch="Uniform" />
+        <!-- Logo, top-left. Click fills admin test credentials for quick sign-in. -->
+        <Button x:Name="LogoButton"
+                Style="{StaticResource LogoButtonStyle}"
+                Width="80"
+                Height="80"
+                Margin="20"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                ToolTip="Admin quick-fill" />
 
         <!-- Language switch, top-right -->
         <ToggleButton x:Name="LangToggle"
@@ -356,6 +587,9 @@
                       Margin="20"
                       HorizontalAlignment="Right"
                       VerticalAlignment="Top" />
+
+        <!-- Not shown: tracks which screen is active (Screen group), alongside NavToCreateUser/NavToLogin -->
+        <RadioButton x:Name="NavToApp" GroupName="Screen" Visibility="Collapsed" />
 
         <!-- Software version, bottom-left -->
         <TextBlock Style="{StaticResource VersionTextStyle}"
@@ -384,14 +618,35 @@
                                Margin="0,0,0,20" />
 
                     <TextBlock Style="{StaticResource UsernameLabelStyle}" />
-                    <TextBox x:Name="UsernameTextBox"
-                             Style="{StaticResource FieldTextBox}" />
+                    <Grid>
+                        <TextBox x:Name="UsernameTextBox"
+                                 Style="{StaticResource FieldTextBox}" />
+                    </Grid>
 
                     <TextBlock Style="{StaticResource PasswordLabelStyle}" />
-                    <PasswordBox x:Name="PasswordBox"
-                                 Style="{StaticResource FieldPasswordBox}" />
+                    <Grid>
+                        <PasswordBox x:Name="PasswordBox"
+                                     Style="{StaticResource FieldPasswordBox}"
+                                     Padding="6,0,34,0" />
+                        <TextBox x:Name="PasswordText"
+                                 Style="{StaticResource FieldTextBox}"
+                                 Padding="6,0,34,0"
+                                 Visibility="Collapsed" />
+                        <ToggleButton x:Name="PasswordReveal"
+                                      Style="{StaticResource EyeToggleButton}"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,4,0" />
+                    </Grid>
 
-                    <Button Style="{StaticResource LoginButtonStyle}" />
+                    <Button x:Name="LoginButton" Style="{StaticResource LoginButtonStyle}" />
+
+                    <!-- Result of the last login attempt: server response shows up here. -->
+                    <TextBlock x:Name="LoginStatusText"
+                               TextWrapping="Wrap"
+                               FontSize="12"
+                               Margin="0,10,0,0"
+                               HorizontalAlignment="Center" />
 
                     <Button Style="{StaticResource OtherWayButtonStyle}" />
 
@@ -421,18 +676,91 @@
                     <TextBlock Style="{StaticResource CreateUserTitleStyle}" />
 
                     <TextBlock Style="{StaticResource UsernameLabelStyle}" />
-                    <TextBox x:Name="NewUsernameTextBox"
-                             Style="{StaticResource FieldTextBox}" />
+                    <Grid>
+                        <TextBox x:Name="NewUsernameTextBox"
+                                 Style="{StaticResource FieldTextBox}" />
+                    </Grid>
+
+                    <!-- Username rules, shown right under the username field. -->
+                    <StackPanel Margin="0,8,0,0">
+                        <StackPanel x:Name="RuleLen" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="RuleLenIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RuleLenTextStyle}" />
+                        </StackPanel>
+                        <StackPanel x:Name="RuleChars" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="RuleCharsIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RuleCharsTextStyle}" />
+                        </StackPanel>
+                        <StackPanel x:Name="RuleStart" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="RuleStartIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RuleStartTextStyle}" />
+                        </StackPanel>
+                    </StackPanel>
 
                     <TextBlock Style="{StaticResource PasswordLabelStyle}" />
-                    <PasswordBox x:Name="NewPasswordBox"
-                                 Style="{StaticResource FieldPasswordBox}" />
+                    <Grid>
+                        <PasswordBox x:Name="NewPasswordBox"
+                                     Style="{StaticResource FieldPasswordBox}"
+                                     Padding="6,0,34,0" />
+                        <TextBox x:Name="NewPasswordText"
+                                 Style="{StaticResource FieldTextBox}"
+                                 Padding="6,0,34,0"
+                                 Visibility="Collapsed" />
+                        <ToggleButton x:Name="NewPasswordReveal"
+                                      Style="{StaticResource EyeToggleButton}"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,4,0" />
+                    </Grid>
 
                     <TextBlock Style="{StaticResource ConfirmPasswordLabelStyle}" />
-                    <PasswordBox x:Name="ConfirmPasswordBox"
-                                 Style="{StaticResource FieldPasswordBox}" />
+                    <Grid>
+                        <PasswordBox x:Name="ConfirmPasswordBox"
+                                     Style="{StaticResource FieldPasswordBox}"
+                                     Padding="6,0,34,0" />
+                        <TextBox x:Name="ConfirmPasswordText"
+                                 Style="{StaticResource FieldTextBox}"
+                                 Padding="6,0,34,0"
+                                 Visibility="Collapsed" />
+                        <ToggleButton x:Name="ConfirmPasswordReveal"
+                                      Style="{StaticResource EyeToggleButton}"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,4,0" />
+                    </Grid>
 
-                    <Button Style="{StaticResource CreateButtonStyle}" />
+                    <!-- Password rules, shown right under the confirm-password field. -->
+                    <StackPanel Margin="0,8,0,0">
+                        <StackPanel x:Name="RulePwLen" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="RulePwLenIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RulePwLenTextStyle}" />
+                        </StackPanel>
+                        <StackPanel x:Name="RulePwUpper" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="RulePwUpperIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RulePwUpperTextStyle}" />
+                        </StackPanel>
+                        <StackPanel x:Name="RulePwLower" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="RulePwLowerIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RulePwLowerTextStyle}" />
+                        </StackPanel>
+                        <StackPanel x:Name="RulePwDigit" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="RulePwDigitIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RulePwDigitTextStyle}" />
+                        </StackPanel>
+                        <StackPanel x:Name="RuleMatch" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="RuleMatchIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RuleMatchTextStyle}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Button x:Name="CreateAccountButton" Style="{StaticResource CreateButtonStyle}" />
+
+                    <!-- Result of the last "Create Account" attempt: server response shows up here. -->
+                    <TextBlock x:Name="CreateAccountStatusText"
+                               TextWrapping="Wrap"
+                               FontSize="12"
+                               Margin="0,10,0,0"
+                               HorizontalAlignment="Center" />
 
                 </StackPanel>
             </Border>
@@ -444,6 +772,16 @@
                          Style="{StaticResource NavToLoginStyle}" />
 
         </StackPanel>
+
+        <!-- ===================== App screen (signed in) ===================== -->
+        <!-- Placeholder for now — everything else the app will show goes in here later. -->
+        <Grid Style="{StaticResource AppScreenVisibility}">
+            <Button x:Name="ExitButton"
+                    Style="{StaticResource ExitButtonStyle}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="24" />
+        </Grid>
 
     </Grid>
 </Window>

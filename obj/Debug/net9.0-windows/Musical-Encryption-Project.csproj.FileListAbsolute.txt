@@ -19,3 +19,11 @@ c:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\obj\Deb
 c:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.pdb
 c:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.genruntimeconfig.cache
 c:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\obj\Debug\net9.0-windows\ref\Musical-Encryption-Project.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Debug\net9.0-windows\System.IO.Pipelines.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Debug\net9.0-windows\System.Net.Http.Json.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Debug\net9.0-windows\System.Text.Encodings.Web.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Debug\net9.0-windows\System.Text.Json.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Debug\net9.0-windows\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Debug\net9.0-windows\runtimes\win\lib\net9.0\System.Text.Encodings.Web.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.csproj.AssemblyReference.cache
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-.57158D7D.Up2Date

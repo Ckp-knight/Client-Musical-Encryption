@@ -14,4 +14,8 @@
     <Resource Include="musical encryption logo.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Net.Http.Json" Version="10.0.12" />
+  </ItemGroup>
+
 </Project>
