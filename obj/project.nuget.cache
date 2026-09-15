@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SS6S63h5oqA=",
+  "dgSpecHash": "AZLnBGD+OZw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Musical-Encryption-Project\\Musical-Encryption-Project_dqdqgcd4_wpftmp.csproj",
+  "projectFilePath": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Musical-Encryption-Project\\Musical-Encryption-Project.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\אורן\\.nuget\\packages\\system.io.pipelines\\10.0.12\\system.io.pipelines.10.0.12.nupkg.sha512",
     "C:\\Users\\אורן\\.nuget\\packages\\system.net.http.json\\10.0.12\\system.net.http.json.10.0.12.nupkg.sha512",

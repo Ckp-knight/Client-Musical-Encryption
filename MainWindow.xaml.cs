@@ -45,6 +45,7 @@ public partial class MainWindow : Window
         NewUsernameTextBox.TextChanged += (_, _) => Validate();
         CreateAccountButton.Click += async (_, _) => await CreateAccountAsync();
         LoginButton.Click += async (_, _) => await LoginAsync();
+        ContinueWithoutAccountButton.Click += (_, _) => ContinueWithoutAccount();
         ExitButton.Click += (_, _) => SignOut();
         LogoButton.Click += (_, _) => FillAdminCredentials();
         Closed += (_, _) => _api.Dispose();
@@ -99,6 +100,18 @@ public partial class MainWindow : Window
             LoginStatusText.Foreground = (Brush)FindResource("RuleRed");
             LoginStatusText.Text = result.Message;
         }
+    }
+
+    // "Continue without" on the login screen: skip the server entirely and enter the app
+    // as a local-only "Unknown" user. No network call is made, so this works fully offline;
+    // nothing typed here ever reaches the server.
+    private void ContinueWithoutAccount()
+    {
+        _loggedInUsername = "Unknown";
+        LoginStatusText.Text = string.Empty;
+        UsernameTextBox.Clear();
+        PasswordBox.Clear();
+        NavToApp.IsChecked = true;
     }
 
     // "Exit" on the app screen: forget who's signed in and go back to the login screen.

@@ -420,6 +420,43 @@
             </Style.Triggers>
         </Style>
 
+        <!-- Rounded black button: enter the app locally, with no server call (offline mode) -->
+        <Style x:Key="ContinueWithoutAccountButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="40" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#1A1A1A" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,10,0,0" />
+            <Setter Property="Content" Value="Continue without" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#333333" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#000000" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Content" Value="המשך בלי משתמש" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="ExitButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
             <Setter Property="Content" Value="Exit" />
             <Setter Property="Width" Value="110" />
@@ -649,6 +686,8 @@
                                HorizontalAlignment="Center" />
 
                     <Button Style="{StaticResource OtherWayButtonStyle}" />
+
+                    <Button x:Name="ContinueWithoutAccountButton" Style="{StaticResource ContinueWithoutAccountButtonStyle}" />
 
                 </StackPanel>
             </Border>

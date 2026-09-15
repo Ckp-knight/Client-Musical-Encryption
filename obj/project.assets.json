@@ -266,9 +266,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Musical-Encryption-Project\\Musical-Encryption-Project_dqdqgcd4_wpftmp.csproj",
+      "projectUniqueName": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Musical-Encryption-Project\\Musical-Encryption-Project.csproj",
       "projectName": "Musical-Encryption-Project",
-      "projectPath": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Musical-Encryption-Project\\Musical-Encryption-Project_dqdqgcd4_wpftmp.csproj",
+      "projectPath": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Musical-Encryption-Project\\Musical-Encryption-Project.csproj",
       "packagesPath": "C:\\Users\\אורן\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Musical-Encryption-Project\\obj\\",
       "projectStyle": "PackageReference",
