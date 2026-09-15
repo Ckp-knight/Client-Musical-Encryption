@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Musical-Encryption-Project")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+56d0b16363c5f2f082b57aede5480a638f8e2b91")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+88b8d8f7700d3edf28b617ae0824776c15219a95")]
 [assembly: System.Reflection.AssemblyProductAttribute("Musical-Encryption-Project")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Musical-Encryption-Project")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

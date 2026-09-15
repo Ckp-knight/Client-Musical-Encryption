@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Musical-Encryption-Project\\Musical-Encryption-Project.csproj": {}
+    "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Client-Musical-Encryption-Project\\Musical-Encryption-Project.csproj": {}
   },
   "projects": {
-    "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Musical-Encryption-Project\\Musical-Encryption-Project.csproj": {
+    "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Client-Musical-Encryption-Project\\Musical-Encryption-Project.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Musical-Encryption-Project\\Musical-Encryption-Project.csproj",
+        "projectUniqueName": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Client-Musical-Encryption-Project\\Musical-Encryption-Project.csproj",
         "projectName": "Musical-Encryption-Project",
-        "projectPath": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Musical-Encryption-Project\\Musical-Encryption-Project.csproj",
+        "projectPath": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Client-Musical-Encryption-Project\\Musical-Encryption-Project.csproj",
         "packagesPath": "C:\\Users\\אורן\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Musical-Encryption-Project\\obj\\",
+        "outputPath": "C:\\Users\\אורן\\Desktop\\MY CODE\\יב Poject\\Client-Musical-Encryption-Project\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
