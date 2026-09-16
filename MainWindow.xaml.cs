@@ -5,7 +5,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives; // ToggleButton
 using System.Windows.Documents;           // TextElement
+using System.Windows.Input;               // Keyboard, FocusNavigationDirection, TraversalRequest
 using System.Windows.Media;               // Brush
+using System.Windows.Threading;           // DispatcherPriority
 
 namespace Musical_Encryption_Project;
 
@@ -42,15 +44,65 @@ public partial class MainWindow : Window
         WirePasswordField(PasswordBox, PasswordText, PasswordReveal, validate: false);
         WirePasswordField(NewPasswordBox, NewPasswordText, NewPasswordReveal, validate: true);
         WirePasswordField(ConfirmPasswordBox, ConfirmPasswordText, ConfirmPasswordReveal, validate: true);
+        WirePasswordField(OldPasswordBox, OldPasswordText, OldPasswordReveal, validate: false, onChange: ValidateChangePassword);
+        WirePasswordField(ChangeNewPasswordBox, ChangeNewPasswordText, ChangeNewPasswordReveal, validate: false, onChange: ValidateChangePassword);
+        WirePasswordField(ChangeConfirmPasswordBox, ChangeConfirmPasswordText, ChangeConfirmPasswordReveal, validate: false, onChange: ValidateChangePassword);
         NewUsernameTextBox.TextChanged += (_, _) => Validate();
         CreateAccountButton.Click += async (_, _) => await CreateAccountAsync();
         LoginButton.Click += async (_, _) => await LoginAsync();
         ContinueWithoutAccountButton.Click += (_, _) => ContinueWithoutAccount();
         ExitButton.Click += (_, _) => SignOut();
         LogoButton.Click += (_, _) => FillAdminCredentials();
+        ChangePasswordButton.Click += (_, _) => OpenChangePasswordScreen();
+        ChangePasswordSubmitButton.Click += async (_, _) => await ChangePasswordAsync();
         Closed += (_, _) => _api.Dispose();
 
+        // Autofocus the first field of whichever screen becomes active, like a typical
+        // website form. NavToLogin/NavToLoginFromChangePassword cover every "back to
+        // login" path (successful login/create/change-password, sign out, admin
+        // quick-fill, and the plain back-link click); NavToCreateUser is a plain
+        // radio-button click with no dedicated code-behind method to hook into instead.
+        NavToCreateUser.Checked += (_, _) => FocusDeferred(NewUsernameTextBox);
+        NavToLogin.Checked += (_, _) => FocusDeferred(UsernameTextBox);
+        NavToLoginFromChangePassword.Checked += (_, _) => FocusDeferred(UsernameTextBox);
+        // NavToLogin's IsChecked="True" in XAML is set during InitializeComponent(), before
+        // the handler above is attached, so the very first screen needs its own focus call.
+        Loaded += (_, _) => FocusDeferred(UsernameTextBox);
+
+        PreviewKeyDown += Window_PreviewKeyDown;
+
         Validate(); // start: all rules red, "Create Account" disabled
+        ValidateChangePassword(); // start: all rules red, "Change Password" disabled
+    }
+
+    // Focuses an element after the current screen's Visibility change has actually been
+    // laid out — calling .Focus() immediately after a Visibility flip can be silently
+    // dropped otherwise, since the element isn't hit-testable until layout catches up.
+    private static void FocusDeferred(FrameworkElement element) =>
+        element.Dispatcher.BeginInvoke(new Action(() => element.Focus()), DispatcherPriority.ContextIdle);
+
+    // Up/Down move focus the same way Tab/Shift+Tab do, and Enter on one of the
+    // "Screen" nav links (Create account / Back to login) activates that link instead
+    // of falling through to the current screen's IsDefault submit button — without
+    // this, Tabbing to "Create account" and pressing Enter would submit Login instead
+    // of switching screens, since a RadioButton doesn't consume Enter itself.
+    private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case Key.Down:
+                (Keyboard.FocusedElement as UIElement)?.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                e.Handled = true;
+                break;
+            case Key.Up:
+                (Keyboard.FocusedElement as UIElement)?.MoveFocus(new TraversalRequest(FocusNavigationDirection.Previous));
+                e.Handled = true;
+                break;
+            case Key.Enter when Keyboard.FocusedElement is RadioButton { GroupName: "Screen" } navLink:
+                navLink.IsChecked = true;
+                e.Handled = true;
+                break;
+        }
     }
 
     // Sends the new account to the server and shows the result under the button.
@@ -121,6 +173,62 @@ public partial class MainWindow : Window
         NavToLogin.IsChecked = true;
     }
 
+    // Pencil icon next to the login password field: opens the Change Password screen,
+    // carrying over whatever username was already typed on the login screen.
+    private void OpenChangePasswordScreen()
+    {
+        ChangePasswordUsernameTextBox.Text = UsernameTextBox.Text;
+        NavToChangePassword.IsChecked = true;
+        FocusDeferred(OldPasswordBox); // username is already filled in, so start typing here
+    }
+
+    // Verifies the old password with the server and, on success, applies the new one.
+    private async System.Threading.Tasks.Task ChangePasswordAsync()
+    {
+        ChangePasswordSubmitButton.IsEnabled = false;
+        ChangePasswordStatusText.Foreground = (Brush)FindResource("TextColor");
+        ChangePasswordStatusText.Text = "Changing password...";
+
+        var result = await _api.ChangePasswordAsync(
+            ChangePasswordUsernameTextBox.Text, OldPasswordBox.Password, ChangeNewPasswordBox.Password);
+
+        ChangePasswordStatusText.Foreground = (Brush)FindResource(result.Success ? "AccentGreen" : "RuleRed");
+        ChangePasswordStatusText.Text = result.Message;
+
+        if (result.Success)
+        {
+            OldPasswordBox.Clear();
+            ChangeNewPasswordBox.Clear();
+            ChangeConfirmPasswordBox.Clear();
+            NavToLogin.IsChecked = true; // password changed -> back to the login screen
+        }
+
+        ValidateChangePassword(); // re-checks the rules and restores the button's enabled state
+    }
+
+    // Re-checks every change-password rule and enables the button only when all pass.
+    private void ValidateChangePassword()
+    {
+        string old = OldPasswordBox.Password;
+        string p = ChangeNewPasswordBox.Password;
+        string c = ChangeConfirmPasswordBox.Password;
+
+        bool pwLen = p.Length >= 8;
+        bool upper = p.Any(char.IsUpper);
+        bool lower = p.Any(char.IsLower);
+        bool digit = p.Any(char.IsDigit);
+        bool match = c.Length > 0 && c == p;
+
+        SetRule(CpRulePwLen, CpRulePwLenIcon, pwLen);
+        SetRule(CpRulePwUpper, CpRulePwUpperIcon, upper);
+        SetRule(CpRulePwLower, CpRulePwLowerIcon, lower);
+        SetRule(CpRulePwDigit, CpRulePwDigitIcon, digit);
+        SetRule(CpRuleMatch, CpRuleMatchIcon, match);
+
+        ChangePasswordSubmitButton.IsEnabled =
+            old.Length > 0 && pwLen && upper && lower && digit && match;
+    }
+
     // Logo click: jump to the login screen and drop in the admin test credentials,
     // so there's no need to create/type a user every time during development.
     private void FillAdminCredentials()
@@ -131,10 +239,18 @@ public partial class MainWindow : Window
     }
 
     // Keeps the PasswordBox and the visible TextBox in sync, and hooks the eye
-    // button into the shared "reveal every password field" toggle.
-    private void WirePasswordField(PasswordBox pb, TextBox tb, ToggleButton eye, bool validate)
+    // button into the shared "reveal every password field" toggle. By default a
+    // change re-runs the create-account Validate(); pass onChange to re-run a
+    // different screen's validator instead (e.g. ValidateChangePassword).
+    private void WirePasswordField(PasswordBox pb, TextBox tb, ToggleButton eye, bool validate, Action? onChange = null)
     {
         _passwordFields.Add((pb, tb, eye));
+
+        void RunValidation()
+        {
+            if (onChange is not null) onChange();
+            else if (validate) Validate();
+        }
 
         pb.PasswordChanged += (_, _) =>
         {
@@ -142,7 +258,7 @@ public partial class MainWindow : Window
             _sync = true;
             tb.Text = pb.Password;
             _sync = false;
-            if (validate) Validate();
+            RunValidation();
         };
 
         tb.TextChanged += (_, _) =>
@@ -151,7 +267,7 @@ public partial class MainWindow : Window
             _sync = true;
             pb.Password = tb.Text;
             _sync = false;
-            if (validate) Validate();
+            RunValidation();
         };
 
         eye.Checked += (_, _) => ApplyReveal(true);

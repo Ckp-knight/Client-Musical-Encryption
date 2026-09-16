@@ -293,6 +293,7 @@
         <!-- Eye button that shows/hides a password field. Unchecked = hidden, Checked = revealed. -->
         <Style x:Key="EyeToggleButton" TargetType="ToggleButton">
             <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="IsTabStop" Value="False" />
             <Setter Property="Width" Value="28" />
             <Setter Property="Height" Value="28" />
             <Setter Property="Background" Value="Transparent" />
@@ -334,6 +335,42 @@
             </Setter>
         </Style>
 
+        <!-- Pencil/edit button next to the login password field: opens the Change Password screen. -->
+        <Style x:Key="EditPencilButtonStyle" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource PlaceholderColor}" />
+            <Setter Property="ToolTip" Value="Change password" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent">
+                            <TextBlock x:Name="pencil"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       Text="&#xE70F;"
+                                       FontSize="16"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="pencil" Property="Foreground" Value="#616161" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="ToolTip" Value="שינוי סיסמה" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <!-- ===== Localized text styles: default English, switch to Hebrew when LangToggle is checked ===== -->
 
         <Style x:Key="UsernameLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource FieldLabel}">
@@ -361,6 +398,39 @@
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
                     <Setter Property="Text" Value="אימות סיסמה" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="OldPasswordLabelStyle" TargetType="TextBlock" BasedOn="{StaticResource FieldLabel}">
+            <Setter Property="Text" Value="Old Password" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Text" Value="סיסמה ישנה" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ChangePasswordTitleStyle" TargetType="TextBlock">
+            <Setter Property="Text" Value="Change Password" />
+            <Setter Property="FontSize" Value="22" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{StaticResource TextColor}" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="0,0,0,20" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Text" Value="שינוי סיסמה" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ChangePasswordSubmitButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Content" Value="Change Password" />
+            <Setter Property="Margin" Value="0,20,0,0" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
+                    <Setter Property="Content" Value="שנה סיסמה" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -429,7 +499,7 @@
             <Setter Property="Background" Value="#1A1A1A" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Margin" Value="0,10,0,0" />
-            <Setter Property="Content" Value="Continue without" />
+            <Setter Property="Content" Value="Offline mode" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -452,7 +522,7 @@
             </Setter>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
-                    <Setter Property="Content" Value="המשך בלי משתמש" />
+                    <Setter Property="Content" Value="מצב לא מקוון" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -569,11 +639,14 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Screen shown only while NavToCreateUser and NavToApp are both unchecked (login screen) -->
+        <!-- Screen shown only while NavToCreateUser, NavToChangePassword and NavToApp are all unchecked (login screen) -->
         <Style x:Key="LoginScreenVisibility" TargetType="StackPanel">
             <Setter Property="Visibility" Value="Visible" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=NavToCreateUser}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=NavToChangePassword}" Value="True">
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=NavToApp}" Value="True">
@@ -587,6 +660,16 @@
             <Setter Property="Visibility" Value="Collapsed" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=NavToCreateUser}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Screen shown only while NavToChangePassword is checked (change-password screen) -->
+        <Style x:Key="ChangePasswordScreenVisibility" TargetType="StackPanel">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=NavToChangePassword}" Value="True">
                     <Setter Property="Visibility" Value="Visible" />
                 </DataTrigger>
             </Style.Triggers>
@@ -627,6 +710,7 @@
 
         <!-- Not shown: tracks which screen is active (Screen group), alongside NavToCreateUser/NavToLogin -->
         <RadioButton x:Name="NavToApp" GroupName="Screen" Visibility="Collapsed" />
+        <RadioButton x:Name="NavToChangePassword" GroupName="Screen" Visibility="Collapsed" />
 
         <!-- Software version, bottom-left -->
         <TextBlock Style="{StaticResource VersionTextStyle}"
@@ -636,6 +720,7 @@
 
         <!-- ===================== Login screen ===================== -->
         <StackPanel Style="{StaticResource LoginScreenVisibility}"
+                    FocusManager.IsFocusScope="True"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
 
@@ -662,21 +747,32 @@
 
                     <TextBlock Style="{StaticResource PasswordLabelStyle}" />
                     <Grid>
-                        <PasswordBox x:Name="PasswordBox"
-                                     Style="{StaticResource FieldPasswordBox}"
-                                     Padding="6,0,34,0" />
-                        <TextBox x:Name="PasswordText"
-                                 Style="{StaticResource FieldTextBox}"
-                                 Padding="6,0,34,0"
-                                 Visibility="Collapsed" />
-                        <ToggleButton x:Name="PasswordReveal"
-                                      Style="{StaticResource EyeToggleButton}"
-                                      HorizontalAlignment="Right"
-                                      VerticalAlignment="Center"
-                                      Margin="0,0,4,0" />
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <PasswordBox x:Name="PasswordBox"
+                                         Style="{StaticResource FieldPasswordBox}"
+                                         Padding="6,0,34,0" />
+                            <TextBox x:Name="PasswordText"
+                                     Style="{StaticResource FieldTextBox}"
+                                     Padding="6,0,34,0"
+                                     Visibility="Collapsed" />
+                            <ToggleButton x:Name="PasswordReveal"
+                                          Style="{StaticResource EyeToggleButton}"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,4,0" />
+                        </Grid>
+                        <Button x:Name="ChangePasswordButton"
+                                Grid.Column="1"
+                                Style="{StaticResource EditPencilButtonStyle}"
+                                VerticalAlignment="Center"
+                                Margin="6,0,0,0" />
                     </Grid>
 
-                    <Button x:Name="LoginButton" Style="{StaticResource LoginButtonStyle}" />
+                    <Button x:Name="LoginButton" Style="{StaticResource LoginButtonStyle}" IsDefault="True" />
 
                     <!-- Result of the last login attempt: server response shows up here. -->
                     <TextBlock x:Name="LoginStatusText"
@@ -701,6 +797,7 @@
 
         <!-- ===================== Create-account screen ===================== -->
         <StackPanel Style="{StaticResource CreateUserScreenVisibility}"
+                    FocusManager.IsFocusScope="True"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
 
@@ -792,7 +889,7 @@
                         </StackPanel>
                     </StackPanel>
 
-                    <Button x:Name="CreateAccountButton" Style="{StaticResource CreateButtonStyle}" />
+                    <Button x:Name="CreateAccountButton" Style="{StaticResource CreateButtonStyle}" IsDefault="True" />
 
                     <!-- Result of the last "Create Account" attempt: server response shows up here. -->
                     <TextBlock x:Name="CreateAccountStatusText"
@@ -808,6 +905,119 @@
             <RadioButton x:Name="NavToLogin"
                          GroupName="Screen"
                          IsChecked="True"
+                         Style="{StaticResource NavToLoginStyle}" />
+
+        </StackPanel>
+
+        <!-- ===================== Change-password screen ===================== -->
+        <StackPanel Style="{StaticResource ChangePasswordScreenVisibility}"
+                    FocusManager.IsFocusScope="True"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+
+            <Border Width="340"
+                    Background="{StaticResource CardBackground}"
+                    BorderBrush="#8A8A8A"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Padding="26,22">
+                <StackPanel>
+
+                    <TextBlock Style="{StaticResource ChangePasswordTitleStyle}" />
+
+                    <TextBlock Style="{StaticResource UsernameLabelStyle}" />
+                    <Grid>
+                        <TextBox x:Name="ChangePasswordUsernameTextBox"
+                                 Style="{StaticResource FieldTextBox}" />
+                    </Grid>
+
+                    <TextBlock Style="{StaticResource OldPasswordLabelStyle}" />
+                    <Grid>
+                        <PasswordBox x:Name="OldPasswordBox"
+                                     Style="{StaticResource FieldPasswordBox}"
+                                     Padding="6,0,34,0" />
+                        <TextBox x:Name="OldPasswordText"
+                                 Style="{StaticResource FieldTextBox}"
+                                 Padding="6,0,34,0"
+                                 Visibility="Collapsed" />
+                        <ToggleButton x:Name="OldPasswordReveal"
+                                      Style="{StaticResource EyeToggleButton}"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,4,0" />
+                    </Grid>
+
+                    <TextBlock Style="{StaticResource PasswordLabelStyle}" />
+                    <Grid>
+                        <PasswordBox x:Name="ChangeNewPasswordBox"
+                                     Style="{StaticResource FieldPasswordBox}"
+                                     Padding="6,0,34,0" />
+                        <TextBox x:Name="ChangeNewPasswordText"
+                                 Style="{StaticResource FieldTextBox}"
+                                 Padding="6,0,34,0"
+                                 Visibility="Collapsed" />
+                        <ToggleButton x:Name="ChangeNewPasswordReveal"
+                                      Style="{StaticResource EyeToggleButton}"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,4,0" />
+                    </Grid>
+
+                    <TextBlock Style="{StaticResource ConfirmPasswordLabelStyle}" />
+                    <Grid>
+                        <PasswordBox x:Name="ChangeConfirmPasswordBox"
+                                     Style="{StaticResource FieldPasswordBox}"
+                                     Padding="6,0,34,0" />
+                        <TextBox x:Name="ChangeConfirmPasswordText"
+                                 Style="{StaticResource FieldTextBox}"
+                                 Padding="6,0,34,0"
+                                 Visibility="Collapsed" />
+                        <ToggleButton x:Name="ChangeConfirmPasswordReveal"
+                                      Style="{StaticResource EyeToggleButton}"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="0,0,4,0" />
+                    </Grid>
+
+                    <!-- Password rules, shown right under the confirm-password field. -->
+                    <StackPanel Margin="0,8,0,0">
+                        <StackPanel x:Name="CpRulePwLen" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="CpRulePwLenIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RulePwLenTextStyle}" />
+                        </StackPanel>
+                        <StackPanel x:Name="CpRulePwUpper" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="CpRulePwUpperIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RulePwUpperTextStyle}" />
+                        </StackPanel>
+                        <StackPanel x:Name="CpRulePwLower" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="CpRulePwLowerIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RulePwLowerTextStyle}" />
+                        </StackPanel>
+                        <StackPanel x:Name="CpRulePwDigit" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="CpRulePwDigitIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RulePwDigitTextStyle}" />
+                        </StackPanel>
+                        <StackPanel x:Name="CpRuleMatch" Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock x:Name="CpRuleMatchIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
+                            <TextBlock Style="{StaticResource RuleMatchTextStyle}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Button x:Name="ChangePasswordSubmitButton" Style="{StaticResource ChangePasswordSubmitButtonStyle}" IsDefault="True" />
+
+                    <!-- Result of the last "Change Password" attempt: server response shows up here. -->
+                    <TextBlock x:Name="ChangePasswordStatusText"
+                               TextWrapping="Wrap"
+                               FontSize="12"
+                               Margin="0,10,0,0"
+                               HorizontalAlignment="Center" />
+
+                </StackPanel>
+            </Border>
+
+            <!-- Back to the login screen -->
+            <RadioButton x:Name="NavToLoginFromChangePassword"
+                         GroupName="Screen"
                          Style="{StaticResource NavToLoginStyle}" />
 
         </StackPanel>

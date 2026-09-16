@@ -75,5 +75,28 @@ public class ApiClient : IDisposable
         }
     }
 
+    /// <summary>Calls POST /api/users/change-password. Same success/error shape as <see cref="RegisterAsync"/>.</summary>
+    public async Task<ApiResult> ChangePasswordAsync(string username, string oldPassword, string newPassword)
+    {
+        try
+        {
+            var response = await _http.PostAsJsonAsync("/api/users/change-password",
+                new { username, oldPassword, newPassword });
+
+            if (response.IsSuccessStatusCode)
+                return new ApiResult(true, "Password changed. You can now log in with your new password.");
+
+            // 400 (bad new password) and 401 (wrong username/old password) both come back as plain text.
+            var errorText = await response.Content.ReadAsStringAsync();
+            return new ApiResult(false, string.IsNullOrWhiteSpace(errorText)
+                ? $"Server returned {(int)response.StatusCode}."
+                : errorText);
+        }
+        catch (HttpRequestException ex)
+        {
+            return new ApiResult(false, $"Could not reach the server at {BaseUrl}. Is it running? ({ex.Message})");
+        }
+    }
+
     public void Dispose() => _http.Dispose();
 }
