@@ -27,3 +27,37 @@ C:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Deb
 C:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Debug\net9.0-windows\runtimes\win\lib\net9.0\System.Text.Encodings.Web.dll
 C:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.csproj.AssemblyReference.cache
 C:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-.57158D7D.Up2Date
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\bin\Debug\net9.0-windows\Musical-Encryption-Project.exe
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\bin\Debug\net9.0-windows\Musical-Encryption-Project.deps.json
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\bin\Debug\net9.0-windows\Musical-Encryption-Project.runtimeconfig.json
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\bin\Debug\net9.0-windows\Musical-Encryption-Project.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\bin\Debug\net9.0-windows\Musical-Encryption-Project.pdb
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\bin\Debug\net9.0-windows\System.IO.Pipelines.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\bin\Debug\net9.0-windows\System.Net.Http.Json.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\bin\Debug\net9.0-windows\System.Text.Encodings.Web.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\bin\Debug\net9.0-windows\System.Text.Json.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\bin\Debug\net9.0-windows\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\bin\Debug\net9.0-windows\runtimes\win\lib\net9.0\System.Text.Encodings.Web.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.csproj.AssemblyReference.cache
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\MainWindow.g.cs
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\App.g.cs
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project_MarkupCompile.cache
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project_MarkupCompile.lref
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\MainWindow.baml
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.g.resources
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.AssemblyInfoInputs.cache
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.AssemblyInfo.cs
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.csproj.CoreCompileInputs.cache
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.sourcelink.json
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-.57158D7D.Up2Date
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\refint\Musical-Encryption-Project.dll
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.pdb
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\Musical-Encryption-Project.genruntimeconfig.cache
+C:\Users\אורן\Desktop\MY CODE\יב Poject\Client-Musical-Encryption-Project\obj\Debug\net9.0-windows\ref\Musical-Encryption-Project.dll
+C:\Users\אורן\AppData\Local\Temp\claude_verify_build\Musical-Encryption-Project.exe
+C:\Users\אורן\AppData\Local\Temp\claude_verify_build\Musical-Encryption-Project.deps.json
+C:\Users\אורן\AppData\Local\Temp\claude_verify_build\Musical-Encryption-Project.runtimeconfig.json
+C:\Users\אורן\AppData\Local\Temp\claude_verify_build\Musical-Encryption-Project.dll
+C:\Users\אורן\AppData\Local\Temp\claude_verify_build\Musical-Encryption-Project.pdb
