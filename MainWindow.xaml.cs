@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives; // ToggleButton
 using System.Windows.Documents;           // TextElement
 using System.Windows.Input;               // Keyboard, FocusNavigationDirection, TraversalRequest
 using System.Windows.Media;               // Brush
+using System.Windows.Shapes;              // Ellipse
 using System.Windows.Threading;           // DispatcherPriority
 
 namespace Musical_Encryption_Project;
@@ -70,6 +71,12 @@ public partial class MainWindow : Window
         Loaded += (_, _) => FocusDeferred(UsernameTextBox);
 
         PreviewKeyDown += Window_PreviewKeyDown;
+
+        // The strength-meter label's text (Weak/Medium/Strong) is set imperatively in
+        // code-behind, unlike every other bilingual string here which is pure XAML
+        // DataTriggers — so it needs an explicit re-run to pick up a language switch.
+        LangToggle.Checked += (_, _) => { Validate(); ValidateChangePassword(); };
+        LangToggle.Unchecked += (_, _) => { Validate(); ValidateChangePassword(); };
 
         Validate(); // start: all rules red, "Create Account" disabled
         ValidateChangePassword(); // start: all rules red, "Change Password" disabled
@@ -219,14 +226,14 @@ public partial class MainWindow : Window
         bool digit = p.Any(char.IsDigit);
         bool match = c.Length > 0 && c == p;
 
-        SetRule(CpRulePwLen, CpRulePwLenIcon, pwLen);
-        SetRule(CpRulePwUpper, CpRulePwUpperIcon, upper);
-        SetRule(CpRulePwLower, CpRulePwLowerIcon, lower);
-        SetRule(CpRulePwDigit, CpRulePwDigitIcon, digit);
+        UpdatePasswordStrength(
+            pwLen, upper, lower, digit,
+            CpRulePwLenDot, CpRulePwUpperDot, CpRulePwLowerDot, CpRulePwDigitDot,
+            new[] { CpPwStrengthSeg1, CpPwStrengthSeg2, CpPwStrengthSeg3, CpPwStrengthSeg4 },
+            CpPwStrengthLabel);
         SetRule(CpRuleMatch, CpRuleMatchIcon, match);
 
-        ChangePasswordSubmitButton.IsEnabled =
-            old.Length > 0 && pwLen && upper && lower && digit && match;
+        ChangePasswordSubmitButton.IsEnabled = old.Length > 0 && pwLen && match;
     }
 
     // Logo click: jump to the login screen and drop in the admin test credentials,
@@ -309,14 +316,14 @@ public partial class MainWindow : Window
         SetRule(RuleLen, RuleLenIcon, len);
         SetRule(RuleChars, RuleCharsIcon, chars);
         SetRule(RuleStart, RuleStartIcon, start);
-        SetRule(RulePwLen, RulePwLenIcon, pwLen);
-        SetRule(RulePwUpper, RulePwUpperIcon, upper);
-        SetRule(RulePwLower, RulePwLowerIcon, lower);
-        SetRule(RulePwDigit, RulePwDigitIcon, digit);
+        UpdatePasswordStrength(
+            pwLen, upper, lower, digit,
+            RulePwLenDot, RulePwUpperDot, RulePwLowerDot, RulePwDigitDot,
+            new[] { PwStrengthSeg1, PwStrengthSeg2, PwStrengthSeg3, PwStrengthSeg4 },
+            PwStrengthLabel);
         SetRule(RuleMatch, RuleMatchIcon, match);
 
-        CreateAccountButton.IsEnabled =
-            len && chars && start && pwLen && upper && lower && digit && match;
+        CreateAccountButton.IsEnabled = len && chars && start && pwLen && match;
     }
 
     // Colours a rule row green when met, red when not, and swaps its check/cross icon.
@@ -325,5 +332,48 @@ public partial class MainWindow : Window
         Brush brush = (Brush)FindResource(ok ? "AccentGreen" : "RuleRed");
         row.SetValue(TextElement.ForegroundProperty, brush);
         icon.Text = ok ? "✓" : "✗";
+    }
+
+    // Colours a composition hint dot: grey when unmet, green when met. These are
+    // informational only — unlike SetRule, they never turn red, since the only
+    // hard password requirement is the minimum length (checked separately).
+    private void SetHint(Ellipse dot, bool ok)
+    {
+        dot.Fill = (Brush)FindResource(ok ? "AccentGreen" : "MeterTrack");
+    }
+
+    // Updates a password's strength meter (4 segments + label) and its 4 composition
+    // hint dots, from the same booleans Validate()/ValidateChangePassword() already
+    // compute. Score 0-4 = how many of the 4 booleans are true.
+    private void UpdatePasswordStrength(
+        bool pwLen, bool upper, bool lower, bool digit,
+        Ellipse lenDot, Ellipse upperDot, Ellipse lowerDot, Ellipse digitDot,
+        Border[] segments, TextBlock label)
+    {
+        SetHint(lenDot, pwLen);
+        SetHint(upperDot, upper);
+        SetHint(lowerDot, lower);
+        SetHint(digitDot, digit);
+
+        int score = new[] { pwLen, upper, lower, digit }.Count(ok => ok);
+        bool empty = !pwLen && !upper && !lower && !digit;
+
+        string level = empty ? "" : score <= 1 ? "weak" : score <= 3 ? "medium" : "strong";
+        string resourceKey = level switch { "weak" => "RuleRed", "medium" => "AccentAmber", "strong" => "AccentGreen", _ => "MeterTrack" };
+        Brush fillBrush = (Brush)FindResource(resourceKey);
+
+        Brush trackBrush = (Brush)FindResource("MeterTrack");
+        for (int i = 0; i < segments.Length; i++)
+            segments[i].Background = i < score ? fillBrush : trackBrush;
+
+        bool he = LangToggle.IsChecked == true;
+        label.Text = level switch
+        {
+            "weak" => he ? "חלשה" : "Weak",
+            "medium" => he ? "בינונית" : "Medium",
+            "strong" => he ? "חזקה" : "Strong",
+            _ => "",
+        };
+        label.Foreground = empty ? (Brush)FindResource("TextColor") : fillBrush;
     }
 }

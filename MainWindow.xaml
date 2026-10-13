@@ -17,6 +17,8 @@
         <SolidColorBrush x:Key="TextColor" Color="Black" />
         <SolidColorBrush x:Key="FieldBorder" Color="#9E9E9E" />
         <SolidColorBrush x:Key="AccentGreen" Color="#2E7D32" />
+        <SolidColorBrush x:Key="AccentAmber" Color="#F9A825" />
+        <SolidColorBrush x:Key="MeterTrack" Color="#C8C8C8" />
         <SolidColorBrush x:Key="PlaceholderColor" Color="#8A8A8A" />
         <SolidColorBrush x:Key="RuleRed" Color="#C62828" />
 
@@ -590,41 +592,41 @@
         </Style>
 
         <Style x:Key="RulePwLenTextStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Text" Value="At least 8 characters" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Text" Value="8+ chars" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
-                    <Setter Property="Text" Value="&#x200F;&#x05DC;&#x05E4;&#x05D7;&#x05D5;&#x05EA; 8 &#x05EA;&#x05D5;&#x05D5;&#x05D9;&#x05DD;" />
+                    <Setter Property="Text" Value="&#x200F;8+ &#x05EA;&#x05D5;&#x05D5;&#x05D9;&#x05DD;" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="RulePwUpperTextStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Text" Value="Contains an uppercase letter" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Text" Value="Uppercase" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
-                    <Setter Property="Text" Value="&#x200F;&#x05DE;&#x05DB;&#x05D9;&#x05DC;&#x05D4; &#x05D0;&#x05D5;&#x05EA; &#x05D2;&#x05D3;&#x05D5;&#x05DC;&#x05D4;" />
+                    <Setter Property="Text" Value="&#x200F;&#x05D0;&#x05D5;&#x05EA; &#x05D2;&#x05D3;&#x05D5;&#x05DC;&#x05D4;" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="RulePwLowerTextStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Text" Value="Contains a lowercase letter" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Text" Value="Lowercase" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
-                    <Setter Property="Text" Value="&#x200F;&#x05DE;&#x05DB;&#x05D9;&#x05DC;&#x05D4; &#x05D0;&#x05D5;&#x05EA; &#x05E7;&#x05D8;&#x05E0;&#x05D4;" />
+                    <Setter Property="Text" Value="&#x200F;&#x05D0;&#x05D5;&#x05EA; &#x05E7;&#x05D8;&#x05E0;&#x05D4;" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
 
         <Style x:Key="RulePwDigitTextStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Text" Value="Contains a digit" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Text" Value="Digit" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
-                    <Setter Property="Text" Value="&#x200F;&#x05DE;&#x05DB;&#x05D9;&#x05DC;&#x05D4; &#x05E1;&#x05E4;&#x05E8;&#x05D4;" />
+                    <Setter Property="Text" Value="&#x200F;&#x05E1;&#x05E4;&#x05E8;&#x05D4;" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -865,25 +867,40 @@
                                       Margin="0,0,4,0" />
                     </Grid>
 
-                    <!-- Password rules, shown right under the confirm-password field. -->
+                    <!-- Password strength meter, shown right under the confirm-password field. -->
                     <StackPanel Margin="0,8,0,0">
-                        <StackPanel x:Name="RulePwLen" Orientation="Horizontal" Margin="0,2,0,0">
-                            <TextBlock x:Name="RulePwLenIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
-                            <TextBlock Style="{StaticResource RulePwLenTextStyle}" />
+                        <Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <Border x:Name="PwStrengthSeg1" Width="60" Height="6" CornerRadius="3" Margin="0,0,4,0" Background="{StaticResource MeterTrack}" />
+                                <Border x:Name="PwStrengthSeg2" Width="60" Height="6" CornerRadius="3" Margin="0,0,4,0" Background="{StaticResource MeterTrack}" />
+                                <Border x:Name="PwStrengthSeg3" Width="60" Height="6" CornerRadius="3" Margin="0,0,4,0" Background="{StaticResource MeterTrack}" />
+                                <Border x:Name="PwStrengthSeg4" Width="60" Height="6" CornerRadius="3" Background="{StaticResource MeterTrack}" />
+                            </StackPanel>
+                            <TextBlock x:Name="PwStrengthLabel" HorizontalAlignment="Right" FontSize="11" FontWeight="SemiBold" />
+                        </Grid>
+
+                        <!-- Composition hints: informational only, not a requirement. -->
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
+                                <Ellipse x:Name="RulePwLenDot" Width="8" Height="8" Margin="0,0,4,0" Fill="{StaticResource MeterTrack}" />
+                                <TextBlock Style="{StaticResource RulePwLenTextStyle}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
+                                <Ellipse x:Name="RulePwUpperDot" Width="8" Height="8" Margin="0,0,4,0" Fill="{StaticResource MeterTrack}" />
+                                <TextBlock Style="{StaticResource RulePwUpperTextStyle}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
+                                <Ellipse x:Name="RulePwLowerDot" Width="8" Height="8" Margin="0,0,4,0" Fill="{StaticResource MeterTrack}" />
+                                <TextBlock Style="{StaticResource RulePwLowerTextStyle}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse x:Name="RulePwDigitDot" Width="8" Height="8" Margin="0,0,4,0" Fill="{StaticResource MeterTrack}" />
+                                <TextBlock Style="{StaticResource RulePwDigitTextStyle}" />
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel x:Name="RulePwUpper" Orientation="Horizontal" Margin="0,2,0,0">
-                            <TextBlock x:Name="RulePwUpperIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
-                            <TextBlock Style="{StaticResource RulePwUpperTextStyle}" />
-                        </StackPanel>
-                        <StackPanel x:Name="RulePwLower" Orientation="Horizontal" Margin="0,2,0,0">
-                            <TextBlock x:Name="RulePwLowerIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
-                            <TextBlock Style="{StaticResource RulePwLowerTextStyle}" />
-                        </StackPanel>
-                        <StackPanel x:Name="RulePwDigit" Orientation="Horizontal" Margin="0,2,0,0">
-                            <TextBlock x:Name="RulePwDigitIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
-                            <TextBlock Style="{StaticResource RulePwDigitTextStyle}" />
-                        </StackPanel>
-                        <StackPanel x:Name="RuleMatch" Orientation="Horizontal" Margin="0,2,0,0">
+
+                        <!-- Passwords match: the only other hard requirement. -->
+                        <StackPanel x:Name="RuleMatch" Orientation="Horizontal" Margin="0,8,0,0">
                             <TextBlock x:Name="RuleMatchIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
                             <TextBlock Style="{StaticResource RuleMatchTextStyle}" />
                         </StackPanel>
@@ -979,25 +996,40 @@
                                       Margin="0,0,4,0" />
                     </Grid>
 
-                    <!-- Password rules, shown right under the confirm-password field. -->
+                    <!-- Password strength meter, shown right under the confirm-password field. -->
                     <StackPanel Margin="0,8,0,0">
-                        <StackPanel x:Name="CpRulePwLen" Orientation="Horizontal" Margin="0,2,0,0">
-                            <TextBlock x:Name="CpRulePwLenIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
-                            <TextBlock Style="{StaticResource RulePwLenTextStyle}" />
+                        <Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <Border x:Name="CpPwStrengthSeg1" Width="60" Height="6" CornerRadius="3" Margin="0,0,4,0" Background="{StaticResource MeterTrack}" />
+                                <Border x:Name="CpPwStrengthSeg2" Width="60" Height="6" CornerRadius="3" Margin="0,0,4,0" Background="{StaticResource MeterTrack}" />
+                                <Border x:Name="CpPwStrengthSeg3" Width="60" Height="6" CornerRadius="3" Margin="0,0,4,0" Background="{StaticResource MeterTrack}" />
+                                <Border x:Name="CpPwStrengthSeg4" Width="60" Height="6" CornerRadius="3" Background="{StaticResource MeterTrack}" />
+                            </StackPanel>
+                            <TextBlock x:Name="CpPwStrengthLabel" HorizontalAlignment="Right" FontSize="11" FontWeight="SemiBold" />
+                        </Grid>
+
+                        <!-- Composition hints: informational only, not a requirement. -->
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
+                                <Ellipse x:Name="CpRulePwLenDot" Width="8" Height="8" Margin="0,0,4,0" Fill="{StaticResource MeterTrack}" />
+                                <TextBlock Style="{StaticResource RulePwLenTextStyle}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
+                                <Ellipse x:Name="CpRulePwUpperDot" Width="8" Height="8" Margin="0,0,4,0" Fill="{StaticResource MeterTrack}" />
+                                <TextBlock Style="{StaticResource RulePwUpperTextStyle}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,10,0">
+                                <Ellipse x:Name="CpRulePwLowerDot" Width="8" Height="8" Margin="0,0,4,0" Fill="{StaticResource MeterTrack}" />
+                                <TextBlock Style="{StaticResource RulePwLowerTextStyle}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse x:Name="CpRulePwDigitDot" Width="8" Height="8" Margin="0,0,4,0" Fill="{StaticResource MeterTrack}" />
+                                <TextBlock Style="{StaticResource RulePwDigitTextStyle}" />
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel x:Name="CpRulePwUpper" Orientation="Horizontal" Margin="0,2,0,0">
-                            <TextBlock x:Name="CpRulePwUpperIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
-                            <TextBlock Style="{StaticResource RulePwUpperTextStyle}" />
-                        </StackPanel>
-                        <StackPanel x:Name="CpRulePwLower" Orientation="Horizontal" Margin="0,2,0,0">
-                            <TextBlock x:Name="CpRulePwLowerIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
-                            <TextBlock Style="{StaticResource RulePwLowerTextStyle}" />
-                        </StackPanel>
-                        <StackPanel x:Name="CpRulePwDigit" Orientation="Horizontal" Margin="0,2,0,0">
-                            <TextBlock x:Name="CpRulePwDigitIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
-                            <TextBlock Style="{StaticResource RulePwDigitTextStyle}" />
-                        </StackPanel>
-                        <StackPanel x:Name="CpRuleMatch" Orientation="Horizontal" Margin="0,2,0,0">
+
+                        <!-- Passwords match: the only other hard requirement. -->
+                        <StackPanel x:Name="CpRuleMatch" Orientation="Horizontal" Margin="0,8,0,0">
                             <TextBlock x:Name="CpRuleMatchIcon" Text="&#x2717;" Width="16" FontWeight="Bold" FontSize="12" />
                             <TextBlock Style="{StaticResource RuleMatchTextStyle}" />
                         </StackPanel>
