@@ -42,6 +42,12 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
+        // Keep the designer's 820x660 default on normal screens, but never open larger
+        // than the actual work area (small laptops, netbooks, RDP sessions). WorkArea is
+        // reported in the same device-independent units as Width/Height, so no DPI
+        // conversion is needed here.
+        ClampStartupSizeToWorkArea();
+
         WirePasswordField(PasswordBox, PasswordText, PasswordReveal, validate: false);
         WirePasswordField(NewPasswordBox, NewPasswordText, NewPasswordReveal, validate: true);
         WirePasswordField(ConfirmPasswordBox, ConfirmPasswordText, ConfirmPasswordReveal, validate: true);
@@ -80,6 +86,20 @@ public partial class MainWindow : Window
 
         Validate(); // start: all rules red, "Create Account" disabled
         ValidateChangePassword(); // start: all rules red, "Change Password" disabled
+    }
+
+    // Shrinks (never grows) the startup size to fit the primary monitor's work area, so
+    // the window never opens larger than a small laptop/netbook/RDP screen can show.
+    private void ClampStartupSizeToWorkArea()
+    {
+        var workArea = SystemParameters.WorkArea;
+        const double margin = 20;
+
+        if (Width > workArea.Width - margin)
+            Width = Math.Max(MinWidth, workArea.Width - margin);
+
+        if (Height > workArea.Height - margin)
+            Height = Math.Max(MinHeight, workArea.Height - margin);
     }
 
     // Focuses an element after the current screen's Visibility change has actually been
