@@ -680,20 +680,27 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Screen shown only while NavToApp is checked (signed in — the app itself) -->
-        <Style x:Key="AppScreenVisibility" TargetType="Grid">
-            <Setter Property="Visibility" Value="Collapsed" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsChecked, ElementName=NavToApp}" Value="True">
-                    <Setter Property="Visibility" Value="Visible" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
     </Window.Resources>
 
     <!-- Background: translucent gray (the rest of the app will show through later, like the Minecraft GUI dim) -->
     <Grid Background="#B3808080">
+
+        <!-- ===================== App screen (signed in) ===================== -->
+        <!-- Placeholder for now — everything else the app will show goes in here later. Always
+             present (not hidden) so it can be seen, dimmed, behind the lock overlay below. -->
+        <Grid>
+            <Button x:Name="ExitButton"
+                    Style="{StaticResource ExitButtonStyle}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="24" />
+        </Grid>
+
+        <!-- "Locked" look over the app screen while any login/create/change-password screen is
+             active: a dim gray scrim. Clicking it skips straight to offline mode, same as the
+             "Continue without account" button. Fades out (and stops blocking clicks) once signed
+             in; snaps back instantly on sign-out. -->
+        <Border x:Name="AppLockOverlay" Background="#D9808080" />
 
         <!-- Logo, top-left. Click fills admin test credentials for quick sign-in. -->
         <Button x:Name="LogoButton"
@@ -1056,16 +1063,6 @@
                          Style="{StaticResource NavToLoginStyle}" />
 
         </StackPanel>
-
-        <!-- ===================== App screen (signed in) ===================== -->
-        <!-- Placeholder for now — everything else the app will show goes in here later. -->
-        <Grid Style="{StaticResource AppScreenVisibility}">
-            <Button x:Name="ExitButton"
-                    Style="{StaticResource ExitButtonStyle}"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Margin="24" />
-        </Grid>
 
     </Grid>
 </Window>

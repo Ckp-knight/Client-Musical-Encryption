@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives; // ToggleButton
 using System.Windows.Documents;           // TextElement
 using System.Windows.Input;               // Keyboard, FocusNavigationDirection, TraversalRequest
 using System.Windows.Media;               // Brush
+using System.Windows.Media.Animation;     // DoubleAnimation
 using System.Windows.Shapes;              // Ellipse
 using System.Windows.Threading;           // DispatcherPriority
 
@@ -58,6 +59,7 @@ public partial class MainWindow : Window
         CreateAccountButton.Click += async (_, _) => await CreateAccountAsync();
         LoginButton.Click += async (_, _) => await LoginAsync();
         ContinueWithoutAccountButton.Click += (_, _) => ContinueWithoutAccount();
+        AppLockOverlay.MouseLeftButtonDown += (_, _) => ContinueWithoutAccount();
         ExitButton.Click += (_, _) => SignOut();
         LogoButton.Click += (_, _) => FillAdminCredentials();
         ChangePasswordButton.Click += (_, _) => OpenChangePasswordScreen();
@@ -75,6 +77,16 @@ public partial class MainWindow : Window
         // NavToLogin's IsChecked="True" in XAML is set during InitializeComponent(), before
         // the handler above is attached, so the very first screen needs its own focus call.
         Loaded += (_, _) => FocusDeferred(UsernameTextBox);
+
+        // Fades the "locked" scrim away once signed in; snaps it back instantly on sign-out.
+        NavToApp.Checked += (_, _) => SetAppLocked(false);
+        NavToApp.Unchecked += (_, _) => SetAppLocked(true);
+
+        // The app itself always opens maximized — whether signed in for real or via
+        // "Continue without account" (offline mode), both check NavToApp the same way.
+        // Sign-out restores the normal login-sized window.
+        NavToApp.Checked += (_, _) => WindowState = WindowState.Maximized;
+        NavToApp.Unchecked += (_, _) => WindowState = WindowState.Normal;
 
         PreviewKeyDown += Window_PreviewKeyDown;
 
@@ -100,6 +112,23 @@ public partial class MainWindow : Window
 
         if (Height > workArea.Height - margin)
             Height = Math.Max(MinHeight, workArea.Height - margin);
+    }
+
+    // Shows/hides the dim "locked" scrim over the app screen. Unlocking (signing in) fades
+    // it out over the login/create/change-password screens; locking back (sign-out) snaps
+    // it back instantly, since only the unlock transition was meant to be animated.
+    private void SetAppLocked(bool locked)
+    {
+        AppLockOverlay.IsHitTestVisible = locked;
+
+        if (locked)
+        {
+            AppLockOverlay.BeginAnimation(UIElement.OpacityProperty, null);
+            AppLockOverlay.Opacity = 1;
+            return;
+        }
+
+        AppLockOverlay.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation(1, 0, TimeSpan.FromSeconds(0.35)));
     }
 
     // Focuses an element after the current screen's Visibility change has actually been
