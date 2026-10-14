@@ -1,5 +1,0 @@
-c:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Release\net9.0-windows\publish\Musical-Encryption-Project.exe
-c:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Release\net9.0-windows\publish\Musical-Encryption-Project.dll
-c:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Release\net9.0-windows\publish\Musical-Encryption-Project.deps.json
-c:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Release\net9.0-windows\publish\Musical-Encryption-Project.runtimeconfig.json
-c:\Users\אורן\Desktop\MY CODE\יב Poject\Musical-Encryption-Project\bin\Release\net9.0-windows\publish\Musical-Encryption-Project.pdb
