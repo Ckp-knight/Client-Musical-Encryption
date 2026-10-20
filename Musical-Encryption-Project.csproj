@@ -7,15 +7,18 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+
+    <!-- Works around a pre-existing "dotnet build" CLI quirk (unrelated to any feature
+         work here): the WPF SDK's auto-generated *_wpftmp.csproj re-generates these same
+         assembly-level attributes a second time in the same obj folder, causing CS0579
+         "duplicate attribute". Pure metadata, no effect on how the app runs. -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="musical encryption logo.png" />
     <Resource Include="musical encryption logo.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Net.Http.Json" Version="10.0.12" />
   </ItemGroup>
 
 </Project>
