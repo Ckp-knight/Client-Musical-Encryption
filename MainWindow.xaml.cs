@@ -141,6 +141,12 @@ public partial class MainWindow : Window
         double height = SystemParameters.PrimaryScreenHeight;
         const double endTop = -60; // just above the visible area
 
+        // Detach each old note's animation before clearing it out — Children.Clear() alone
+        // only removes them from the canvas; their RepeatBehavior.Forever clocks would keep
+        // ticking (and keep the note objects alive) forever otherwise, leaking a little more
+        // on every respawn (e.g. every sign-out).
+        foreach (UIElement oldNote in NotesCanvas.Children)
+            oldNote.BeginAnimation(Canvas.TopProperty, null);
         NotesCanvas.Children.Clear();
 
         for (int i = 0; i < count; i++)
