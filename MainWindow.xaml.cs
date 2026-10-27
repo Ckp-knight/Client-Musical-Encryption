@@ -31,6 +31,10 @@ public partial class MainWindow : Window
     // The one object in this project that talks to the server.
     private readonly ApiClient _api = new();
 
+    // Drives the floating background notes (see SpawnFloatingNotes) — decorative only.
+    private readonly Random _rng = new();
+    private static readonly string[] NoteGlyphs = { "♪", "♫", "♬", "♩" };
+
     // Set once login succeeds. Not shown anywhere yet, but this is what future
     // requests (e.g. encrypting something) will send as the X-User-Id header.
     private string? _loggedInUsername;
@@ -49,13 +53,14 @@ public partial class MainWindow : Window
         // conversion is needed here.
         ClampStartupSizeToWorkArea();
 
-        WirePasswordField(PasswordBox, PasswordText, PasswordReveal, validate: false);
+        WirePasswordField(PasswordBox, PasswordText, PasswordReveal, validate: false, onChange: ValidateLogin);
         WirePasswordField(NewPasswordBox, NewPasswordText, NewPasswordReveal, validate: true);
         WirePasswordField(ConfirmPasswordBox, ConfirmPasswordText, ConfirmPasswordReveal, validate: true);
         WirePasswordField(OldPasswordBox, OldPasswordText, OldPasswordReveal, validate: false, onChange: ValidateChangePassword);
         WirePasswordField(ChangeNewPasswordBox, ChangeNewPasswordText, ChangeNewPasswordReveal, validate: false, onChange: ValidateChangePassword);
         WirePasswordField(ChangeConfirmPasswordBox, ChangeConfirmPasswordText, ChangeConfirmPasswordReveal, validate: false, onChange: ValidateChangePassword);
         NewUsernameTextBox.TextChanged += (_, _) => Validate();
+        UsernameTextBox.TextChanged += (_, _) => ValidateLogin();
         CreateAccountButton.Click += async (_, _) => await CreateAccountAsync();
         LoginButton.Click += async (_, _) => await LoginAsync();
         ContinueWithoutAccountButton.Click += (_, _) => ContinueWithoutAccount();
@@ -82,6 +87,10 @@ public partial class MainWindow : Window
         NavToApp.Checked += (_, _) => SetAppLocked(false);
         NavToApp.Unchecked += (_, _) => SetAppLocked(true);
 
+        // Re-scatters the background notes every time the login screen is reached again
+        // (e.g. sign-out), so it never opens to an empty canvas — see SpawnFloatingNotes.
+        NavToApp.Unchecked += (_, _) => SpawnFloatingNotes();
+
         // The app itself always opens maximized — whether signed in for real or via
         // "Continue without account" (offline mode), both check NavToApp the same way.
         // Sign-out restores the normal login-sized window.
@@ -98,6 +107,9 @@ public partial class MainWindow : Window
 
         Validate(); // start: all rules red, "Create Account" disabled
         ValidateChangePassword(); // start: all rules red, "Change Password" disabled
+        ValidateLogin(); // start: fields empty, "Login" disabled
+
+        SpawnFloatingNotes();
     }
 
     // Shrinks (never grows) the startup size to fit the primary monitor's work area, so
@@ -112,6 +124,58 @@ public partial class MainWindow : Window
 
         if (Height > workArea.Height - margin)
             Height = Math.Max(MinHeight, workArea.Height - margin);
+    }
+
+    // Fills NotesCanvas with musical-note glyphs that drift slowly upward and loop forever.
+    // Called once at startup and again every time the login screen is reached (see
+    // NavToApp.Unchecked above), so it never opens to an empty canvas waiting for notes to
+    // crawl up from below: each note starts already scattered somewhere on screen (random X
+    // AND Y), rises the rest of the way to the top just once, then settles into the normal
+    // bottom-to-top loop for as long as the screen stays open.
+    // Uses the physical screen size (not the window's, which starts small and later maximizes)
+    // so the travel distance stays right whether the window is at its login size or maximized.
+    private void SpawnFloatingNotes()
+    {
+        const int count = 96; // 16 * 6 (+500%)
+        double width = SystemParameters.PrimaryScreenWidth;
+        double height = SystemParameters.PrimaryScreenHeight;
+        const double endTop = -60; // just above the visible area
+
+        NotesCanvas.Children.Clear();
+
+        for (int i = 0; i < count; i++)
+        {
+            var note = new TextBlock
+            {
+                Text = NoteGlyphs[_rng.Next(NoteGlyphs.Length)],
+                FontSize = _rng.Next(18, 42),
+                Foreground = Brushes.White,
+                Opacity = _rng.NextDouble() * 0.18 + 0.12, // kept faint: this is ambient flair, not content
+            };
+
+            double loopStartTop = height + _rng.Next(20, 120); // just below the visible area, for every loop after the first
+            double loopDuration = _rng.Next(16, 28);
+            double scatteredStartTop = _rng.NextDouble() * height; // anywhere already on screen, for right now
+
+            Canvas.SetLeft(note, _rng.NextDouble() * width);
+            Canvas.SetTop(note, scatteredStartTop);
+            NotesCanvas.Children.Add(note);
+
+            // First leg: from that scattered spot up to the top, at the same speed the loop
+            // below will use, so it doesn't look like it's rushing or crawling. Once it
+            // finishes, hand off to the regular forever loop from off-screen at the bottom.
+            double firstLegDuration = loopDuration * (scatteredStartTop - endTop) / (loopStartTop - endTop);
+            var firstLeg = new DoubleAnimation(scatteredStartTop, endTop, TimeSpan.FromSeconds(firstLegDuration));
+            firstLeg.Completed += (_, _) =>
+            {
+                var loop = new DoubleAnimation(loopStartTop, endTop, TimeSpan.FromSeconds(loopDuration))
+                {
+                    RepeatBehavior = RepeatBehavior.Forever,
+                };
+                note.BeginAnimation(Canvas.TopProperty, loop);
+            };
+            note.BeginAnimation(Canvas.TopProperty, firstLeg);
+        }
     }
 
     // Shows/hides the dim "locked" scrim over the app screen. Unlocking (signing in) fades
@@ -189,11 +253,9 @@ public partial class MainWindow : Window
     {
         LoginButton.IsEnabled = false;
         LoginStatusText.Foreground = (Brush)FindResource("TextColor");
-        LoginStatusText.Text = "Signing in...";
+        LoginStatusText.Text = LangToggle.IsChecked == true ? "מתחבר..." : "Signing in...";
 
         var result = await _api.LoginAsync(UsernameTextBox.Text, PasswordBox.Password);
-
-        LoginButton.IsEnabled = true;
 
         if (result.Success)
         {
@@ -206,8 +268,35 @@ public partial class MainWindow : Window
         else
         {
             LoginStatusText.Foreground = (Brush)FindResource("RuleRed");
-            LoginStatusText.Text = result.Message;
+            LoginStatusText.Text = LocalizeLoginError(result.Message);
         }
+
+        ValidateLogin(); // restores the button's enabled state from the current field contents
+    }
+
+    // Disables Login until both fields have something typed, so a click can't send an
+    // empty request to the server. Mirrors Validate()/ValidateChangePassword().
+    private void ValidateLogin()
+    {
+        LoginButton.IsEnabled = UsernameTextBox.Text.Trim().Length > 0 && PasswordBox.Password.Length > 0;
+    }
+
+    // The server's error strings are English-only (it has no concept of the client's
+    // language toggle), so this is where the handful of messages LoginAsync can actually
+    // get back are translated for display, matching every other bilingual string here.
+    private string LocalizeLoginError(string message)
+    {
+        if (LangToggle.IsChecked != true)
+            return message;
+
+        return message switch
+        {
+            "Username and password are required." => "יש להזין שם משתמש וסיסמה.",
+            "Invalid username or password." => "שם משתמש או סיסמה שגויים.",
+            "This account has been banned." => "חשבון זה נחסם.",
+            _ when message.StartsWith("Could not reach the server") => "לא ניתן להתחבר לשרת. ודא שהשרת פועל.",
+            _ => message,
+        };
     }
 
     // "Continue without" on the login screen: skip the server entirely and enter the app

@@ -455,12 +455,12 @@
         </Style>
 
         <Style x:Key="VersionTextStyle" TargetType="TextBlock">
-            <Setter Property="Text" Value="Version 1.0.0" />
+            <Setter Property="Text" Value="Version 1.0.1" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="Foreground" Value="{StaticResource TextColor}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsChecked, ElementName=LangToggle}" Value="True">
-                    <Setter Property="Text" Value="גרסה 1.0.0" />
+                    <Setter Property="Text" Value="גרסה 1.0.1" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -680,6 +680,17 @@
             </Style.Triggers>
         </Style>
 
+        <!-- Shown on every login/create-account/change-password screen; hidden once NavToApp
+             (signed in) is checked, matching the other *ScreenVisibility styles above. -->
+        <Style x:Key="NotesCanvasVisibility" TargetType="Canvas">
+            <Setter Property="Visibility" Value="Visible" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=NavToApp}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
 
     <!-- Background: translucent gray (the rest of the app will show through later, like the Minecraft GUI dim) -->
@@ -701,6 +712,12 @@
              "Continue without account" button. Fades out (and stops blocking clicks) once signed
              in; snaps back instantly on sign-out. -->
         <Border x:Name="AppLockOverlay" Background="#D9808080" />
+
+        <!-- Ambient background flair: slowly drifting musical notes, filled in from code-behind
+             (SpawnFloatingNotes). Sits above the lock overlay so it stays visible on the login
+             screens too, but below every real control, so cards/buttons always draw over it and
+             it never steals a click (IsHitTestVisible="False"). -->
+        <Canvas x:Name="NotesCanvas" Style="{StaticResource NotesCanvasVisibility}" IsHitTestVisible="False" ClipToBounds="True" />
 
         <!-- Logo, top-left. Click fills admin test credentials for quick sign-in. -->
         <Button x:Name="LogoButton"
